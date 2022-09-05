@@ -44,3 +44,57 @@ We don't mind if you use whatever external libraries you like as long as they ar
 ### Estimation
 You will see an open issue "Call for estimation". Please estimate by writing a comment when you think the task will be ready before you start. We don't set any hard deadlines.
 
+# Solution
+
+## Considerations
+
+* I used a recursive algorithm to perform the search for the numbers in the received payload, here I had to make a tradeoff between single responsibility and efficiency, since I could have stored the numbers in an array but then I would have had to iterate to make the sum of the numbers, so I would have added an O(n) time complexity.
+* The logs are categorized by level, it is possible to select the logging level of the service with the LogLevel environment variable.
+* Unit tests are included.
+* Including Make as interface to execute commands to compile, test, check(linter) the program.
+* Docker configuration.
+
+## Environment Variables
+
+* API_LOGLEVEL: Log level. Default: `debug`.
+* API_JWT_TOKENTTLHOURS: Expiration time of the JWT token. Default: `1 hour`
+* API_JWT_SECRETKEY: The token signing key. Default: `secret`
+
+## Execute the program
+
+* Docker
+
+```
+make make compile
+docker build --no-cache -t api .
+docker run --publish 8080:8080 api
+```
+
+## Run tests
+
+```
+make test
+```
+
+## Run checks
+```
+make check
+```
+
+## Request examples
+
+```
+//auth
+curl --location --request POST 'http://localhost:8080/auth' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username": "user",
+    "password": "pass"
+}'
+
+//sum
+curl --location --request POST 'http://localhost:8080/sum' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6InVzZXIiLCJleHAiOjE2NjI0MDQ5MDR9.I7BJQ2uyMC0aBmvqFQmOprgSwm2vLGUh9h90rjbsAVM' \
+--header 'Content-Type: application/json' \
+--data-raw '{"Code": 4, "david": [[[[191919]]]], "cosa": [19, 12, 45, [{"wil": -1}]], "Payload": {"Start": 1, "End": 10, "cosa1": {"cosa2": 1919, "cosa3": [15, 16], "cosa4": {"cosa5": [12345, 4323]}}}}'
+```
